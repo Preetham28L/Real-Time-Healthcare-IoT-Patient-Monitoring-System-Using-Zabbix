@@ -1,0 +1,41 @@
+Zabbix Sender Commands
+Overview
+These commands are used to send simulated heart rate values from IoT patient nodes to the Zabbix Server for monitoring and trigger generation.
+
+Syntax
+zabbix_sender -z <ZABBIX_SERVER_IP> -s "<HOST_NAME>" -k <ITEM_KEY> -o <VALUE>
+
+Where:
+-z → Zabbix server IP address
+-s → Host name (same as configured in Zabbix frontend)
+-k → Item key (matches the item in Zabbix configuration)
+-o → Value to send (e.g., heart rate value)
+
+Example Commands for Patient Data
+Patient-1
+zabbix_sender -z 172.24.113.11 -s "Patient-1" -k custom.heart.rate -o 76
+Patient-2
+zabbix_sender -z 172.24.113.11 -s "Patient-2" -k custom.heart.rate -o 110
+Patient-3
+zabbix_sender -z 172.24.113.11 -s "Patient-3" -k custom.heart.rate -o 92
+Patient-4
+zabbix_sender -z 172.24.113.11 -s "Patient-4" -k custom.heart.rate -o 130
+Patient-5
+zabbix_sender -z 172.24.113.11 -s "Patient-5" -k custom.heart.rate -o 68
+
+Testing Trigger Activation
+To simulate a critical heart rate alert:
+zabbix_sender -z 172.24.113.11 -s "Patient-4" -k custom.heart.rate -o 150
+This should trigger the Heart Rate Critical Alert if the threshold (> 120) is configured in Zabbix.
+
+Verification Command
+To verify that data was sent successfully, check the response message:
+Response from "172.24.113.11:10051": "processed: 1; failed: 0; total: 1; seconds spent: 0.001234"
+sent: 1; skipped: 0; total: 1
+If you see "failed: 0", it means the value was successfully received by Zabbix Server.
+
+Notes
+Ensure that the Zabbix Agent or Sender package is installed:
+sudo apt install zabbix-sender -y
+Make sure each host name (Patient-1, Patient-2, etc.) exists in Zabbix before sending data.
+The item key (custom.heart.rate) must match the key configured in the host’s item settings.

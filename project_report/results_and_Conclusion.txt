@@ -1,0 +1,53 @@
+RESULTS
+Real-Time Monitoring
+
+The Zabbix dashboard successfully displayed live heart rate data from simulated IoT patient devices.
+Five patient nodes (Patient-1 to Patient-5) were added to the monitoring system.
+Each patient’s data (Heart Rate in bpm) was updated using the zabbix_sender command.
+
+Example test commands:
+
+zabbix_sender -z 172.24.113.11 -s "Patient-1" -k custom.heart.rate -o 76
+zabbix_sender -z 172.24.113.11 -s "Patient-4" -k custom.heart.rate -o 135
+Zabbix displayed updated values in the Latest Data and Graphs sections for each patient host.
+
+Trigger and Alert Mechanism
+
+Custom trigger logic was created to detect abnormal heart rate:
+{Patient-X:custom.heart.rate.last()} > 120
+When the threshold exceeded 120 bpm, the trigger activated and changed the patient status to Problem.
+The alert was visibly shown on the Zabbix dashboard under “Monitoring → Problems”.
+Alerts displayed color-coded severity levels (High for critical heart rate).
+
+Visualization Dashboard
+
+A custom Zabbix dashboard was created with the following widgets:
+Top 5 Patients by Heart Rate
+Graph of Heart Rate Variation
+Patient Device Status
+Dashboard auto-refreshed to show the most recent heart rate readings.
+
+Telegram Notification
+
+Telegram bot was successfully configured using BotFather.
+A test message was sent using:
+/usr/lib/zabbix/alertscripts/telegram.sh "<bot_token>" "<chat_id>" "Test message from Zabbix"
+For demo purposes, dashboard alerts were used instead of direct Telegram notifications.
+
+CONCLUSION
+
+The Healthcare IoT Monitoring System was implemented successfully using Zabbix.
+The project achieved the following objectives:
+Real-time patient heart rate monitoring.
+Automated alert generation for abnormal conditions.
+Centralized dashboard visualization for hospital staff.
+This solution showcases how IoT data and monitoring automation can improve healthcare efficiency, early detection, and patient safety.
+
+Key Takeaways:
+
+Zabbix can be effectively used as a healthcare IoT monitoring platform.
+Triggers and alerts can detect critical patient conditions in real-time.
+Future improvements:
+Integrating temperature, oxygen, and ECG sensors.
+Enabling cloud-based dashboard access.
+Linking Telegram or email notifications for remote alerts.

@@ -1,0 +1,77 @@
+Healthcare IoT Monitoring System — Implementation Steps
+
+Phase 1 — Environment Setup
+Install Zabbix Server & Frontend
+Installed Zabbix on Ubuntu using repository:
+sudo apt update
+sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent
+
+Configured MySQL database for Zabbix.
+Started and enabled services:
+sudo systemctl enable --now zabbix-server zabbix-agent apache2 mysql
+
+Accessed Zabbix frontend at http://localhost/zabbix.
+Verified SNMP & Zabbix Communication
+Installed SNMP utilities for testing:
+sudo apt install snmp snmp-mibs-downloader -y
+Verified agent connection with:
+snmpget -v2c -c public 127.0.0.1 1.3.6.1.2.1.1.1.0
+
+Phase 2 — Device Simulation
+Created virtual patient devices in Zabbix:
+Patient-1
+Patient-2
+Patient-3
+Patient-4
+Patient-5
+
+Each host was assigned an agent interface:
+127.0.0.1
+Added a custom item to each patient:
+Name: Heart Rate
+Type: Zabbix trapper
+Key: custom.heart.rate
+Units: bpm
+Update interval: 30s
+
+Phase 3 — Dashboard & Monitoring
+Used Zabbix Sender to inject real-time patient data:
+
+zabbix_sender -z 172.24.113.11 -s "Patient-1" -k custom.heart.rate -o 76
+zabbix_sender -z 172.24.113.11 -s "Patient-2" -k custom.heart.rate -o 110
+zabbix_sender -z 172.24.113.11 -s "Patient-3" -k custom.heart.rate -o 92
+zabbix_sender -z 172.24.113.11 -s "Patient-4" -k custom.heart.rate -o 130
+zabbix_sender -z 172.24.113.11 -s "Patient-5" -k custom.heart.rate -o 68
+
+
+Created custom dashboard:
+Top 5 patients by heart rate
+Live heart rate graph
+Patient device status
+Verified data updating every few seconds using the “Latest Data” and “Graphs” section.
+
+Phase 4 — Alerts & Notifications
+Created trigger for each patient:
+{Patient-1:custom.heart.rate.last()} > 120
+Severity: High
+Description: Heart rate exceeds normal threshold.
+Displayed alerts directly on Zabbix dashboard.
+
+Telegram notifications:
+Created Telegram bot using BotFather.
+Linked Zabbix to Telegram via alertscripts/telegram.sh.
+For project demo, dashboard alert visualization only was used.
+
+Phase 5 — Results
+Successfully simulated 5 patient monitoring devices.
+Live heart rate values appeared on dashboard.
+Trigger alert generated when any patient’s heart rate exceeded 120 bpm.
+Dashboard showed:
+Real-time graphs
+Top patients by heart rate
+Hospital map layout
+
+Phase 6 — Conclusion
+Implemented an IoT-based healthcare monitoring system using Zabbix.
+System can monitor patient vitals in real time and alert medical staff for anomalies.
+Demonstrates how intelligent monitoring and automation improve healthcare efficiency and response time.
